@@ -1,15 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace Chip8
 {
-    class EmulatorCore
+    class EmulatorCore:CPU
     {
         public List<string> errorList = new List<string>();
         byte[] programData;
+
+
 
         public EmulatorCore()
         {
@@ -18,7 +21,20 @@ namespace Chip8
 
         public void LoadProgram(string path)
         {
+            FileStream fStream = File.OpenRead(path);
+            programData = new byte[fStream.Length];
 
+            fStream.Read(programData, 0, programData.Length);
+            fStream.Close();
+            //Begins the process of writing the byte array back to a file
+
+            using (Stream file = File.OpenWrite(path))
+            {
+                file.Write(programData, 0, programData.Length);
+            }
+
+            for (int i = 0; i < programData.Length; ++i)
+                memory[i + 512] = programData[i];
         }
 
         public bool emulateCycle()
