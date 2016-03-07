@@ -39,9 +39,213 @@ namespace Chip8
 
         public bool emulateCycle()
         {
+
             if (programData.Length + 512 < pc + 1)
                 return false;
             opcode = (ushort)(memory[pc] << 8 | memory[pc + 1]);
+
+            // Decode opcode
+            switch (opcode & 0xF000)
+            {
+                // Some opcodes //
+
+                case 0x0000:
+                    switch (opcode & 0x000F)
+                    {
+                        case 0x0000: // 0x00E0: Clears the screen    
+
+                            break;
+
+                        case 0x000E: // 0x00EE: Returns from subroutine          
+
+
+                            break;
+
+                        default:
+                            pc += 2;
+                            errorList.Add("Unknown opcode [0x0000]:" + (opcode).ToString("X") + " \n");
+                            break;
+                    }
+                    break;
+
+                case 0x1000:
+                    {
+
+                        break;
+                    }
+                case 0x2000:
+                    {
+
+
+                        break;
+                    }
+                case 0x3000:
+                    {
+
+                        break;
+
+                    }
+                case 0x4000:
+                    {
+
+                        break;
+                    }
+                case 0x5000:
+                    {
+
+                        break;
+                    }
+
+                case 0x6000:
+                    {
+
+
+                        break;
+                    }
+                case 0x7000:
+                    {
+
+
+                        break;
+                    }
+                case 0x8000:
+                    {
+                        switch (opcode & 0x000F)
+                        {
+                            case 0x0000:
+
+                                break;
+                            case 0x0001:
+
+                                break;
+                            case 0x0002:
+
+                                break;
+                            case 0x0003:
+
+                                break;
+                            case 0x0004:
+
+                                break;
+                            case 0x0005:
+
+                                break;
+                            case 0x0006:
+
+                                break;
+                            case 0x0007:
+
+                                break;
+                            case 0x0008:
+
+                                break;
+                            default:
+                                pc += 2;
+                                errorList.Add("Unknown opcode [0x8000]: " + (opcode).ToString("X") + " \n");
+                                break;
+                        }
+                        break;
+
+                    }
+                case 0x9000:
+                    {
+
+                        break;
+                    }
+
+                case 0xA000: // ANNN: Sets I to the address NNN
+
+                    break;
+
+                case 0xB000: // ANNN: Sets I to the address NNN
+
+                    break;
+
+                // More opcodes //
+                case 0xC000:
+                    {
+
+                        break;
+                    }
+                case 0xD000:
+                    {
+
+                        break;
+                    }
+                case 0xE000:
+                    switch (opcode & 0x00FF)
+                    {
+                        // EX9E: Skips the next instruction 
+                        // if the key stored in VX is pressed
+                        case 0x009E:
+
+                            break;
+
+                        case 0x00A1: // EXA1: Skips the next instruction if the key stored in VX isn't pressed
+
+                            break;
+                        default:
+                            errorList.Add("Unknown opcode: " + (opcode).ToString("X") + " \n");
+                            break;
+                    }
+                    break;
+
+                case 0xF000:
+                    switch (opcode & 0x00FF)
+                    {
+                        case 0x0007: // FX07: Sets VX to the value of the delay timer
+
+                            break;
+
+                        case 0x000A: // FX0A: A key press is awaited, and then stored in VX		
+
+                            break;
+
+                        case 0x0015: // FX15: Sets the delay timer to VX
+
+                            break;
+
+                        case 0x0018: // FX18: Sets the sound timer to VX
+
+                            break;
+
+                        case 0x001E: // FX1E: Adds VX to I
+
+
+                            break;
+
+                        case 0x0029: // FX29: Sets I to the location of the sprite for the character in VX.
+
+                            break;
+
+                        case 0x0033: // FX33: Stores the Binary-coded decimal representation of VX at the addresses I, I plus 1, and I plus 2
+
+                            break;
+
+                        case 0x0055: // FX55: Stores V0 to VX in memory starting at address I					
+
+
+                            break;
+
+                        case 0x0065: // FX65: Fills V0 to VX with values from memory starting at address I					
+
+                            break;
+
+                        default:
+                            errorList.Add("Unknown opcode: " + (opcode).ToString("X") + " \n");
+                            break;
+                    }
+                    break;
+
+
+                default:
+                    errorList.Add("Unknown opcode: " + (opcode).ToString("X") + " \n");
+                    pc += 2;
+                    break;
+            }
+
+            if (delay_timer > 0)
+                --delay_timer;
 
             return true;
         }
