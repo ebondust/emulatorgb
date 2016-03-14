@@ -53,11 +53,14 @@ namespace Chip8
                     switch (opcode & 0x000F)
                     {
                         case 0x0000: // 0x00E0: Clears the screen    
-
+                            for (int i = 0; i < 2048; ++i)
+                                gfx[i] = 0x0;
+                            pc += 2;
                             break;
 
                         case 0x000E: // 0x00EE: Returns from subroutine          
-
+                            pc = pop();	// Put the stored return address from the stack back into the program counter					
+                            pc += 2;
 
                             break;
 
@@ -70,29 +73,42 @@ namespace Chip8
 
                 case 0x1000:
                     {
-
+                        pc = (ushort)(opcode & 0x0FFF);
                         break;
                     }
                 case 0x2000:
                     {
 
-
+                        push(pc);
+                        pc = (ushort)(opcode & 0x0FFF);
                         break;
                     }
                 case 0x3000:
                     {
-
+                        ushort lOp = (ushort)(opcode & 0x00FF);
+                        int v = (ushort)(opcode & 0x0F00) >> 8;
+                        if (register[v] == lOp)
+                            pc += 2;
+                        pc += 2;
                         break;
 
                     }
                 case 0x4000:
                     {
-
+                        ushort lOp = (ushort)(opcode & 0x00FF);
+                        int v = (ushort)(opcode & 0x0F00) >> 8;
+                        if (register[v] != lOp)
+                            pc += 2;
+                        pc += 2;
                         break;
                     }
                 case 0x5000:
                     {
-
+                        int v = (ushort)(opcode & 0x0F00) >> 8;
+                        int v2 = (ushort)(opcode & 0x00F0) >> 4;
+                        if (register[v] == register[v2])
+                            pc += 2;
+                        pc += 2;
                         break;
                     }
 
