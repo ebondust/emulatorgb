@@ -115,13 +115,19 @@ namespace Chip8
                 case 0x6000:
                     {
 
-
+                        ushort lOp = (ushort)((opcode & 0x00FF));
+                        int v = (ushort)(opcode & 0x0F00) >> 8;
+                        register[v] = (byte)lOp;
+                        pc += 2;
                         break;
                     }
                 case 0x7000:
                     {
 
-
+                        ushort lOp = (ushort)(opcode & 0x00FF);
+                        int v = (ushort)(opcode & 0x0F00) >> 8;
+                        register[v] += (byte)lOp;
+                        pc += 2;
                         break;
                     }
                 case 0x8000:
