@@ -132,34 +132,71 @@ namespace Chip8
                     }
                 case 0x8000:
                     {
+                        int v;
+                        int v2;
                         switch (opcode & 0x000F)
                         {
                             case 0x0000:
-
+                                v = (ushort)(opcode & 0x0F00) >> 8;
+                                v2 = (ushort)(opcode & 0x00F0) >> 4;
+                                register[v] = register[v2];
+                                pc += 2;
                                 break;
                             case 0x0001:
-
+                                v = (ushort)(opcode & 0x0F00) >> 8;
+                                v2 = (ushort)(opcode & 0x00F0) >> 4;
+                                register[v] = (byte)(register[v] | register[v2]);
+                                pc += 2;
                                 break;
                             case 0x0002:
-
+                                v = (ushort)(opcode & 0x0F00) >> 8;
+                                v2 = (ushort)(opcode & 0x00F0) >> 4;
+                                register[v] = (byte)(register[v] & register[v2]);
+                                pc += 2;
                                 break;
                             case 0x0003:
-
+                                v = (ushort)(opcode & 0x0F00) >> 8;
+                                v2 = (ushort)(opcode & 0x00F0) >> 4;
+                                register[v] ^= (register[v2]);
+                                pc += 2;
                                 break;
                             case 0x0004:
-
+                                if (register[(opcode & 0x0F00) >> 8] + register[(opcode & 0x00F0) >> 4] > 255)
+                                    register[15] = 1;
+                                else
+                                    register[15] = 0;
+                                register[(opcode & 0x0F00) >> 8] += register[(opcode & 0x00F0) >> 4];
+                                pc += 2;
                                 break;
                             case 0x0005:
-
+                                if (register[(opcode & 0x0F00) >> 8] > register[(opcode & 0x00F0) >> 4])
+                                    register[15] = 1;
+                                else
+                                    register[15] = 0;
+                                register[(opcode & 0x0F00) >> 8] -= register[(opcode & 0x00F0) >> 4];
+                                pc += 2;
                                 break;
                             case 0x0006:
-
+                                v = (ushort)(opcode & 0x0F00) >> 8;
+                                v2 = (ushort)(opcode & 0x00F0) >> 4;
+                                register[v] = (byte)(register[v] >> 1);
+                                register[15] = (byte)v2;
+                                pc += 2;
                                 break;
                             case 0x0007:
-
+                                if (register[(opcode & 0x0F00) >> 8] > register[(opcode & 0x00F0) >> 4])
+                                    register[15] = 0;
+                                else
+                                    register[15] = 1;
+                                register[(opcode & 0x00F0) >> 4] -= register[(opcode & 0x0F00) >> 8];
+                                pc += 2;
                                 break;
                             case 0x0008:
-
+                                v = (ushort)(opcode & 0x0F00) >> 8;
+                                v2 = (ushort)(opcode & 0x00F0) >> 4;
+                                register[v] = (byte)(register[v] << 1);
+                                register[15] = (byte)v2;
+                                pc += 2;
                                 break;
                             default:
                                 pc += 2;
