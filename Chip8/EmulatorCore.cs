@@ -207,20 +207,26 @@ namespace Chip8
 
                     }
                 case 0x9000:
-                    {
 
+                        int v = (ushort)(opcode & 0x0F00) >> 8;
+                        int v2 = (ushort)(opcode & 0x00F0) >> 4;
+                        if (register[v] != register[v2])
+                            pc += 2;
+                        pc += 2;
                         break;
-                    }
-
+          
                 case 0xA000: // ANNN: Sets I to the address NNN
-
+                   
+                    I = (ushort)(opcode & 0x0FFF);
+                    errorList.Add("" + (opcode).ToString("X"));
+                    pc += 2;
                     break;
 
                 case 0xB000: // ANNN: Sets I to the address NNN
 
+                    pc = (ushort)((opcode & 0x0FFF) + register[0]);
                     break;
 
-                // More opcodes //
                 case 0xC000:
                     {
 
