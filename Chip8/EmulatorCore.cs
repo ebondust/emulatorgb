@@ -207,14 +207,14 @@ namespace Chip8
 
                     }
                 case 0x9000:
-
+                    {
                         int v = (ushort)(opcode & 0x0F00) >> 8;
                         int v2 = (ushort)(opcode & 0x00F0) >> 4;
                         if (register[v] != register[v2])
                             pc += 2;
                         pc += 2;
                         break;
-          
+                    }
                 case 0xA000: // ANNN: Sets I to the address NNN
                    
                     I = (ushort)(opcode & 0x0FFF);
@@ -222,14 +222,16 @@ namespace Chip8
                     pc += 2;
                     break;
 
-                case 0xB000: // ANNN: Sets I to the address NNN
+                case 0xB000:
 
                     pc = (ushort)((opcode & 0x0FFF) + register[0]);
                     break;
 
                 case 0xC000:
                     {
-
+                        int v = (ushort)(opcode & 0x0F00) >> 8;
+                        register[v] = (byte)(new Random().Next(255) & (opcode & 0x00FF));
+                        pc += 2;
                         break;
                     }
                 case 0xD000:
@@ -240,14 +242,19 @@ namespace Chip8
                 case 0xE000:
                     switch (opcode & 0x00FF)
                     {
-                        // EX9E: Skips the next instruction 
                         // if the key stored in VX is pressed
                         case 0x009E:
-
+                            if (keypad[register[(opcode & 0x0F00) >> 8]] != 0)
+                                pc += 4;
+                            else
+                                pc += 2;
                             break;
 
                         case 0x00A1: // EXA1: Skips the next instruction if the key stored in VX isn't pressed
-
+                            if (keypad[register[(opcode & 0x0F00) >> 8]] == 0)
+                                pc += 4;
+                            else
+                                pc += 2;
                             break;
                         default:
                             errorList.Add("Unknown opcode: " + (opcode).ToString("X") + " \n");
