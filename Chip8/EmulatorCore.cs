@@ -265,16 +265,35 @@ namespace Chip8
                 case 0xF000:
                     switch (opcode & 0x00FF)
                     {
-                        case 0x0007: // FX07: Sets VX to the value of the delay timer
-
+                        case 0x0007: 
+                            register[(opcode & 0x0F00) >> 8] = delay_timer;
+                            pc += 2;
                             break;
 
-                        case 0x000A: // FX0A: A key press is awaited, and then stored in VX		
+                        case 0x000A:
+                            {
+                                bool keyPress = false;
 
+                                for (int i = 0; i < 16; ++i)
+                                {
+                                    if (keypad[i] != 0)
+                                    {
+                                        register[(opcode & 0x0F00) >> 8] = (byte)i;
+                                        keyPress = true;
+                                    }
+                                }
+
+                                // If we didn't receive a keypress, skip and try again.
+                                if (!keyPress)
+                                    return true;
+
+                                pc += 2;
+                            }
                             break;
 
                         case 0x0015: // FX15: Sets the delay timer to VX
-
+                            delay_timer = register[(opcode & 0x0F00) >> 8];
+                            pc += 2;
                             break;
 
                         case 0x0018: // FX18: Sets the sound timer to VX
