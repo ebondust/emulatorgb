@@ -291,6 +291,11 @@ namespace Chip8
                             }
                             break;
 
+                        case 0x0015: // FX15: Sets the delay timer to VX
+                            delay_timer = register[(opcode & 0x0F00) >> 8];
+                            pc += 2;
+                            break;
+
                         case 0x0018: // FX18: Sets the sound timer to VX
                             sound_timer = register[(opcode & 0x0F00) >> 8];
                             pc += 2;
