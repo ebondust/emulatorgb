@@ -291,22 +291,23 @@ namespace Chip8
                             }
                             break;
 
-                        case 0x0015: // FX15: Sets the delay timer to VX
-                            delay_timer = register[(opcode & 0x0F00) >> 8];
+                        case 0x0018: // FX18: Sets the sound timer to VX
+                            sound_timer = register[(opcode & 0x0F00) >> 8];
                             pc += 2;
                             break;
 
-                        case 0x0018: // FX18: Sets the sound timer to VX
-
-                            break;
-
                         case 0x001E: // FX1E: Adds VX to I
-
-
+                            if (I + register[(opcode & 0x0F00) >> 8] > 0xFFF)	// VF is set to 1 when range overflow (I+VX>0xFFF), and 0 when there isn't.
+                                register[0xF] = 1;
+                            else
+                                register[0xF] = 0;
+                            I += register[(opcode & 0x0F00) >> 8];
+                            pc += 2;
                             break;
 
-                        case 0x0029: // FX29: Sets I to the location of the sprite for the character in VX.
-
+                        case 0x0029: // FX29: Sets I to the location of the sprite for the character in VX. Characters 0-F (in hexadecimal) are represented by a 4x5 font
+                            I = (ushort)(register[(opcode & 0x0F00) >> 8] * 0x5);
+                            pc += 2;
                             break;
 
                         case 0x0033: // FX33: Stores the Binary-coded decimal representation of VX at the addresses I, I plus 1, and I plus 2
