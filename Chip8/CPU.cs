@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Chip8
 {
-    class CPU
+    public class CPU
     {
         protected ushort opcode;
         protected byte[] memory = new byte[4096];

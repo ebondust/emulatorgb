@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -7,16 +8,19 @@ using System.Threading.Tasks;
 
 namespace Chip8
 {
-    class EmulatorCore:CPU
+    public class EmulatorCore:CPU
     {
         public List<string> errorList = new List<string>();
         byte[] programData;
 
-
+        public byte[] Gfx
+        {
+            get { return gfx; }
+        }
 
         public EmulatorCore()
         {
-
+            initialize();
         }
 
         public void LoadProgram(string path)
@@ -236,7 +240,26 @@ namespace Chip8
                     }
                 case 0xD000:
                     {
+                        ushort x = register[(opcode & 0x0F00) >> 8];
+                        ushort y = register[(opcode & 0x00F0) >> 4];
+                        ushort height = (ushort)(opcode & 0x000F);
+                        ushort pixel;
 
+                        register[0xF] = 0;
+                        for (int yline = 0; yline < height; yline++)
+                        {
+                            pixel = memory[I + yline];
+                            for (int xline = 0; xline < 8; xline++)
+                            {
+                                if ((pixel & (0x80 >> xline)) != 0)
+                                {
+                                    if (gfx[(x + xline + ((y + yline) * 64))] == 1)
+                                        register[0xF] = 1;
+                                    gfx[x + xline + ((y + yline) * 64)] ^= 1;
+                                }
+                            }
+                        }
+                        pc += 2;
                         break;
                     }
                 case 0xE000:
@@ -316,16 +339,28 @@ namespace Chip8
                             break;
 
                         case 0x0033: // FX33: Stores the Binary-coded decimal representation of VX at the addresses I, I plus 1, and I plus 2
-
+                            memory[I] = (byte)(register[(opcode & 0x0F00) >> 8] / 100);
+                            memory[I + 1] = (byte)((register[(opcode & 0x0F00) >> 8] / 10) % 10);
+                            memory[I + 2] = (byte)((register[(opcode & 0x0F00) >> 8] % 100) % 10);
+                            pc += 2;
                             break;
 
                         case 0x0055: // FX55: Stores V0 to VX in memory starting at address I					
+                            for (int i = 0; i <= ((opcode & 0x0F00) >> 8); ++i)
+                                memory[I + i] = register[i];
 
-
+                            // On the original interpreter, when the operation is done, I = I + X + 1.
+                            I += (ushort)(((opcode & 0x0F00) >> 8) + 1);
+                            pc += 2;
                             break;
 
                         case 0x0065: // FX65: Fills V0 to VX with values from memory starting at address I					
+                            for (int i = 0; i <= ((opcode & 0x0F00) >> 8); ++i)
+                                register[i] = memory[I + i];
 
+                            // On the original interpreter, when the operation is done, I = I + X + 1.
+                            I += (ushort)(((opcode & 0x0F00) >> 8) + 1);
+                            pc += 2;
                             break;
 
                         default:
@@ -354,11 +389,9 @@ namespace Chip8
         public void endInput(int key)
         {
             keypad[key] = 0;
-        }        
-
-        public void drawGfx()
-        {
-
         }
+
+   
+
     }
 }
