@@ -386,7 +386,7 @@ namespace Chip8
         {
             keypad[key] = 1;
         }
-        public void endInput(int key)
+        public void EndInput(int key)
         {
             keypad[key] = 0;
         }

@@ -46,7 +46,7 @@
             // 
             // MainLoop
             // 
-            this.MainLoop.Interval = 17;
+            this.MainLoop.Interval = 1;
             this.MainLoop.Tick += new System.EventHandler(this.MainLoop_Tick);
             // 
             // MainForm
@@ -55,8 +55,11 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(514, 252);
             this.Controls.Add(this.Canvas);
+            this.KeyPreview = true;
             this.Name = "MainForm";
             this.Text = "MainForm";
+            this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.MainForm_KeyDown);
+            this.KeyUp += new System.Windows.Forms.KeyEventHandler(this.MainForm_KeyUp);
             ((System.ComponentModel.ISupportInitialize)(this.Canvas)).EndInit();
             this.ResumeLayout(false);
 

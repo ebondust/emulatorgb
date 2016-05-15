@@ -17,13 +17,15 @@ namespace Chip8Display
         public MainForm()
         {
             InitializeComponent();
-            emulator.LoadProgram("ufo");
+            emulator.LoadProgram("INVADERS");
             MainLoop.Start();
         }
 
         private void MainLoop_Tick(object sender, EventArgs e)
         {
-            emulator.emulateCycle();
+            for (int i = 0; i < 8; i++)
+                emulator.emulateCycle();
+
             drawGfx(Canvas);
         }
         public void drawGfx(PictureBox screen)
@@ -46,6 +48,79 @@ namespace Chip8Display
                 screen.Invalidate();
 
             }
+        }
+
+        private void MainForm_KeyDown(object sender, KeyEventArgs e)
+        {
+            int key = translateKeyCode(e.KeyCode);
+            if (key < 0)
+                return;
+            emulator.Input(key);
+        }
+
+        private int translateKeyCode(Keys code)
+        {
+            int key = -1;
+            switch (code)
+            {
+                case Keys.Q:
+                    key = 0;
+                    break;
+                case Keys.W:
+                    key = 1;
+                    break;
+                case Keys.E:
+                    key = 2;
+                    break;
+                case Keys.R:
+                    key = 3;
+                    break;
+                case Keys.T:
+                    key = 4;
+                    break;
+                case Keys.Y:
+                    key = 5;
+                    break;
+                case Keys.A:
+                    key = 6;
+                    break;
+                case Keys.S:
+                    key = 7;
+                    break;
+                case Keys.D:
+                    key = 8;
+                    break;
+                case Keys.F:
+                    key = 9;
+                    break;
+                case Keys.G:
+                    key = 10;
+                    break;
+                case Keys.H:
+                    key = 11;
+                    break;
+                case Keys.Z:
+                    key = 12;
+                    break;
+                case Keys.X:
+                    key = 13;
+                    break;
+                case Keys.C:
+                    key = 14;
+                    break;
+                case Keys.V:
+                    key = 15;
+                    break;
+            }
+            return key;
+        }
+
+        private void MainForm_KeyUp(object sender, KeyEventArgs e)
+        {
+            int key = translateKeyCode(e.KeyCode);
+            if (key < 0)
+                return;
+            emulator.EndInput(key);
         }
     }
 }
