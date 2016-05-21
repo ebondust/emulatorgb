@@ -6,6 +6,7 @@ using System.Data;
 using System.Drawing;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -17,17 +18,32 @@ namespace Chip8Display
         public MainForm()
         {
             InitializeComponent();
-            emulator.LoadProgram("INVADERS");
             MainLoop.Start();
         }
 
         private void MainLoop_Tick(object sender, EventArgs e)
         {
+            if (!emulator.Initialized)
+                return;
             for (int i = 0; i < 8; i++)
                 emulator.emulateCycle();
 
             drawGfx(Canvas);
         }
+        public void clearGfx(PictureBox screen)
+        {
+            screen.Image = new Bitmap(64, 32);
+            for (int x = 0; x < 64; x++)
+            {
+                for (int y = 0; y < 32; y++)
+                {
+                    ((Bitmap)screen.Image).SetPixel(x, y, Color.Black);
+                }
+            }
+            screen.SizeMode = PictureBoxSizeMode.StretchImage;
+            screen.Invalidate();
+        }
+
         public void drawGfx(PictureBox screen)
         {
             screen.Image = new Bitmap(64, 32);
@@ -44,7 +60,6 @@ namespace Chip8Display
                 }
 
                 screen.SizeMode = PictureBoxSizeMode.StretchImage;
-                // System.Threading.Thread.Sleep(10);
                 screen.Invalidate();
 
             }
@@ -121,6 +136,18 @@ namespace Chip8Display
             if (key < 0)
                 return;
             emulator.EndInput(key);
+        }
+
+        private void openRomToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            openFileDialog1.ShowDialog();
+        }
+
+        private void openFileDialog1_FileOk(object sender, CancelEventArgs e)
+        {
+            clearGfx(Canvas);  
+            emulator.LoadProgram(openFileDialog1.FileName);
+           
         }
     }
 }

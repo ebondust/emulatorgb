@@ -22,6 +22,8 @@ namespace Chip8
         protected ushort sp = 0;
         protected byte[] keypad = new byte[16];
 
+        public bool Initialized = false;
+
         protected void push(ushort value)
         {
             stack[sp] = value;
@@ -36,6 +38,7 @@ namespace Chip8
 
         public void initialize()
         {
+            Initialized = true;
             pc = 0x200;
             opcode = 0;
             I = 0;
@@ -45,18 +48,18 @@ namespace Chip8
             {
                 stack[i] = 0;
                 register[i] = 0;
+                keypad[i] = 0;
             }
 
             for (int i = 0; i < 4096; i++)// Clear memory
                 memory[i] = 0;
 
-            for (int i = 0; i < 80; ++i) // Load fontset
+            for (int i = 0; i < 80; i++) // Load fontset
                 memory[i] = fontset[i];
 
-            for (int i = 0; i < 64; i++)// Clear display
-                for (int j = 0; j < 32; j++)
+            for (int i = 0; i < 64*32; i++)// Clear display
                 {
-                    gfx[i * j] = 0;
+                    gfx[i] = 0;
                 }
 
             // Reset timers

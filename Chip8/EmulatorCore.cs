@@ -12,6 +12,7 @@ namespace Chip8
     {
         public List<string> errorList = new List<string>();
         byte[] programData;
+       
 
         public byte[] Gfx
         {
@@ -20,11 +21,12 @@ namespace Chip8
 
         public EmulatorCore()
         {
-            initialize();
+            
         }
 
         public void LoadProgram(string path)
         {
+            initialize();
             FileStream fStream = File.OpenRead(path);
             programData = new byte[fStream.Length];
 
@@ -37,7 +39,7 @@ namespace Chip8
                 file.Write(programData, 0, programData.Length);
             }
 
-            for (int i = 0; i < programData.Length; ++i)
+            for (int i = 0; i < programData.Length; i++)
                 memory[i + 512] = programData[i];
         }
 
