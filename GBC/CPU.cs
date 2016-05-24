@@ -19,6 +19,22 @@ namespace GBC
         public ushort IC; // Instructions counter register.
         public byte SP; // stack pointer register.
 
+        public ushort AF
+        {
+            get
+            {
+                ushort a = (ushort)(A << 8);
+                ushort f = (ushort)(F);
+                return (ushort)(a | f);
+            }
+
+            set
+            {
+                A = (byte)(value >> 8);
+                F = (byte)(value);
+            }
+        }
+
         public ushort BC
         {
             get
@@ -35,8 +51,40 @@ namespace GBC
             }
         }
 
+        public ushort DE
+        {
+            get
+            {
+                ushort d = (ushort)(D << 8);
+                ushort e = (ushort)(E);
+                return (ushort)(d | e);
+            }
 
-        // z80 procesor timers.
+            set
+            {
+                D = (byte)(value >> 8);
+                E = (byte)(value);
+            }
+        }
+
+        public ushort HL
+        {
+            get
+            {
+                ushort h = (ushort)(H << 8);
+                ushort l = (ushort)(L);
+                return (ushort)(h | l);
+            }
+
+            set
+            {
+                H = (byte)(value >> 8);
+                L = (byte)(value);
+            }
+        }
+
+
+        // procesor timers.
         public int m = 0;
         public int t = 0;
     }
