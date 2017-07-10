@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace GBC
 {
-    class CPU
+    public class CPU
     {
         public byte A; // general purporse registers
         public byte B;
@@ -16,7 +16,7 @@ namespace GBC
         public byte H;
         public byte L;
         public byte F; // Flags register.
-        public ushort IC; // Instructions counter register.
+        public ushort IP; // Instructions counter register.
         public byte SP; // stack pointer register.
 
         public ushort AF

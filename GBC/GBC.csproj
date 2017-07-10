@@ -43,6 +43,7 @@
     <Compile Include="CPU.cs" />
     <Compile Include="EmulatorCore.cs" />
     <Compile Include="MMU.cs" />
+    <Compile Include="Opcode.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
