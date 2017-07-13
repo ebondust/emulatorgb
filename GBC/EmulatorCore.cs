@@ -93,7 +93,7 @@ namespace GBC
         //0x08
         private void ldMnnSp()
         {
-            mmu.WB(mmu.RW(cpu.IP), cpu.SP);
+            mmu.WW(mmu.RW(cpu.IP), cpu.SP);
             cpu.m = 3;
         }
         //0x09
@@ -384,7 +384,179 @@ namespace GBC
             cpu.A = (byte)(~cpu.A);
             cpu.m = 1;
         }
+        //0x30
+        private void JRNcn()
+        {
+            cpu.m = 2;
+            if ((cpu.F & 0x10) != 0x00)
+                return;
+            byte i = mmu.RB(cpu.IP);
+            if (i > 127)
+                i = (byte)-((~i + 1) & 255);
+            cpu.IP += mmu.RB(cpu.IP);
+        }
+        //0x31
+        private void ldSPnn()
+        {
+            cpu.SP = mmu.RB(cpu.IP);
+            cpu.IP += 2;
+            cpu.m = 3;
 
+        }
+        //0x32
+        private void lddHL()
+        {
+            mmu.WB(cpu.HL, cpu.A);
+            cpu.HL--;
+        }
+        //0x33
+        private void incSP()
+        {
+            cpu.SP++;
+            cpu.m += 1;
+        }
+        //0x34
+        private void incHLm()
+        {
+            ushort temp = mmu.RW(cpu.HL);
+            temp++;
+            mmu.WW(cpu.HL, temp);
+            cpu.m = 3;
+        }
+        //0x35
+        private void decHLm()
+        {
+            ushort temp = mmu.RW(cpu.HL);
+            temp--;
+            mmu.WW(cpu.HL, temp);
+            cpu.m = 3;
+        }
+        //0x36
+        private void ldHLmn()
+        {
+            mmu.WB(cpu.HL, mmu.RB(cpu.IP));
+            cpu.m = 3;
+        }
+        //0x37
+        private void scf()
+        {
+            cpu.F = 0x10;
+        }
+        //0x38
+        private void JRCn()
+        {
+            cpu.m = 2;
+            if ((cpu.F & 0x10) == 0x00)
+                return;
+            byte i = mmu.RB(cpu.IP);
+            if (i > 127)
+                i = (byte)-((~i + 1) & 255);
+            cpu.IP += mmu.RB(cpu.IP);
+        }
+        //0x39
+        private void addHLSP()
+        {
+            cpu.HL = (ushort)(cpu.HL + cpu.SP);
+            cpu.m = 1;
+        }
+        //0x3A
+        private void lddAHLm()
+        {
+            cpu.A = mmu.RB(cpu.HL);
+            cpu.HL--;
+        }
+        //0x3B
+        private void decSP()
+        {
+            cpu.SP--;
+            cpu.m = 1;
+        }
+        //0x3C
+        private void IncA()
+        {
+            cpu.A++;
+            cpu.m = 1;
+        }
+        //0x32D
+        private void DecA()
+        {
+            cpu.A--;
+            cpu.m = 1;
+        }
+        //0x32E
+        private void ldA()
+        {
+            cpu.A = mmu.RB(cpu.IP);
+            cpu.m = 2;
+        }
+        //0x3F
+        private void ccf()
+        {
+            cpu.F = (byte)(cpu.F & ~0x10);
+        }
+        //0x40
+        private void ldBB()
+        {
+            cpu.B = cpu.B;
+            cpu.m = 1;
+        }
+        //0x50
+        private void ldDB()
+        {
+            cpu.D = cpu.B;
+            cpu.m = 1;
+        }
+        //0x60
+        private void ldHB()
+        {
+            cpu.H = cpu.B;
+            cpu.m = 1;
+        }
+        //0x70
+        private void ldHLmB()
+        {
+            mmu.WB(cpu.HL,cpu.B);
+            cpu.m = 1;
+        }
+        //0x80
+        private void addAB()
+        {
+            int temp = cpu.A + cpu.B;
+            if (temp > 255)
+                cpu.F = 0x10;
+            else
+                cpu.F = 0;
+            if (temp == 0)
+                cpu.F |= 0x80;
+            if ((((cpu.A & 0xf) + (cpu.B & 0xf)) & 0x10) == 0x10)
+                cpu.F |= 0x20;
 
+            cpu.A = (byte)temp;
+            cpu.m = 1;
+        }
+        //0x90
+        private void subAB()
+        {
+            int temp = cpu.A - cpu.B;
+            if (temp < 0)
+                cpu.F = 0x10;
+            else
+                cpu.F = 0;
+            if (temp == 0)
+                cpu.F |= 0x80;
+            if ((((cpu.A & 0xf) + (cpu.B & 0xf)) & 0x10) == 0x10)
+                cpu.F |= 0x20;
+
+            cpu.F |= 0x40;
+
+            cpu.A = (byte)temp;
+            cpu.m = 1;
+        }
+        //0xA0
+        private void  andB()
+        {
+            cpu.A &= cpu.B;
+            cpu.F = (cpu.A == 0)? (byte)0x80 : (byte)0;
+        }
     }
 }

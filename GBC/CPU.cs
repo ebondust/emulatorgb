@@ -17,7 +17,7 @@ namespace GBC
         public byte L;
         public byte F; // Flags register.
         public ushort IP; // Instructions counter register.
-        public byte SP; // stack pointer register.
+        public ushort SP; // stack pointer register.
 
         public ushort AF
         {
